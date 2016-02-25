@@ -8,6 +8,11 @@ import com.shsgd.ilavayou.states.GameStateManager;
 import com.shsgd.ilavayou.states.MenuState;
 
 public class Main extends ApplicationAdapter {
+	
+	// This is the Main class. It's pretty short though because lots of the action
+	// happens in other files. Main interacts with an instance of GameStateManager, which
+	// later delegates to other things causing the game to run.
+
 	public static final int WIDTH = 800, HEIGHT = 480;
 	public static final String title = "I Lava You!";
 

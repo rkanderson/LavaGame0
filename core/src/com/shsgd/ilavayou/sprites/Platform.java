@@ -43,4 +43,24 @@ public class Platform {
                 !(p.getPosition().y<position.y+height)) return true;
         return false;
     }
+
+    public boolean checkPlayerSideCollisions(Player p){
+        // To determine left or right collisions, I'll rely on the center of the player being
+        // not inside the platform
+        //Check from left
+        if (p.getPosition().x + Player.RADIUS >= getPosition().x &&
+                p.getPosition().x + Player.RADIUS <= position.x + width &&
+                p.getPosition().y <= position.y + height &&
+                p.getPosition().x < position.x){
+            p.bounceLeft(position.x);
+        } else if (p.getPosition().x - Player.RADIUS <= position.x + width &&
+                p.getPosition().x - Player.RADIUS >= position.x &&
+                p.getPosition().y <= position.y +height &&
+                p.getPosition().x > position.x + width){
+            p.bounceRight(position.x + width);
+        }
+
+        //Check from right side
+        return false;
+    }
 }

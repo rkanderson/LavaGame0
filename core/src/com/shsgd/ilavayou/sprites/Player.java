@@ -1,6 +1,7 @@
 package com.shsgd.ilavayou.sprites;
 
 import com.badlogic.gdx.math.Vector2;
+import com.shsgd.ilavayou.Main;
 import com.shsgd.ilavayou.states.PlayState;
 
 /**
@@ -8,10 +9,15 @@ import com.shsgd.ilavayou.states.PlayState;
  */
 public class Player {
     public static final int RADIUS = 20;
-    public static final int MOVE_SPEED = 100;
+    public static int MOVE_SPEED = 200;
     public static final int BOUNCE_BACK_SPEED_CONSTANT = 350;
     private Vector2 position;
     private Vector2 velocity;
+
+    private boolean movingRight=false, movingLeft=false;
+    private boolean moveRightInReserve=false, moveLeftInReserve=false;
+    private float score=0;
+    private float distanceTraveledCounter=0;
 
     public Player(int x, int y){
         position = new Vector2(x, y);
@@ -23,31 +29,48 @@ public class Player {
 
         velocity.scl(dt);
         position.add(velocity.x, velocity.y);
-        velocity.scl(1/dt);
+        distanceTraveledCounter+=velocity.x;
+        score+=velocity.x;
+        velocity.scl(1 / dt);
 
         if(position.y-RADIUS/2 < PlayState.GROUND_HEIGHT){
             bounce(PlayState.GROUND_HEIGHT);
         }
+
     }
 
     public void rightPressed(){
-        velocity.set(MOVE_SPEED, velocity.y);
+        if (movingLeft) moveRightInReserve = true;
+        else {
+            movingRight = true;
+            velocity.set(PlayState.CAMERA_VELOCITY.x + MOVE_SPEED, velocity.y);
+        }
         System.out.println("right pressed");
     }
 
     public void leftPressed(){
-        velocity.set(-MOVE_SPEED, velocity.y);
+        if (movingRight) moveLeftInReserve = true;
+        else {
+            movingLeft = true;
+            velocity.set(PlayState.CAMERA_VELOCITY.x - MOVE_SPEED, velocity.y);
+        }
         System.out.println("left pressed");
     }
 
     public void rightReleased(){
-        velocity.set(0, velocity.y);
+        moveRightInReserve = false;
+        movingRight = false;
+        if(moveLeftInReserve) leftPressed();
+        else velocity.set(PlayState.CAMERA_VELOCITY.x - 50, velocity.y);
         System.out.println("right released");
 
     }
 
     public void leftReleased(){
-        velocity.set(0, velocity.y);
+        moveLeftInReserve = false;
+        movingLeft = false;
+        if(moveRightInReserve) rightPressed();
+        else velocity.set(PlayState.CAMERA_VELOCITY.x - 50, velocity.y);
         System.out.println("left released");
 
     }
@@ -63,6 +86,24 @@ public class Player {
 
     public void bounce(int fromY){
         position.y = fromY+RADIUS/2;
-        velocity.y = BOUNCE_BACK_SPEED_CONSTANT;
+        //velocity.y = BOUNCE_BACK_SPEED_CONSTANT;
+        velocity.y = (int)((Main.HEIGHT - position.y)*1.3);
     }
+
+    public void bounceLeft(float fromX){
+        position.x = fromX - RADIUS;
+        //velocity.set(-20, velocity.y);
+    }
+    public void bounceRight(float fromX){
+        position.x = fromX + RADIUS;
+        //velocity.set(20, velocity.y);
+    }
+
+    public float getDistanceTraveled(){
+        return distanceTraveledCounter;
+    }
+    public void resetDistanceTraveledCounter(){
+        distanceTraveledCounter = 0;
+    }
+    public float getScore(){return score;}
 }
