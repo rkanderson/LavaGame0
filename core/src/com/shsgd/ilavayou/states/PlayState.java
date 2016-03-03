@@ -113,6 +113,11 @@ public class PlayState extends State implements InputProcessor {
         sr.setColor(1, 0.2f, 0.2f, 0.9f);
         for(Platform platform: platforms)
             sr.rect(platform.getPosition().x, platform.getPosition().y, platform.getWidth(), platform.getHeight());
+
+        //Draw a nice simple little ground that's a blueish-white block and a little transparent
+        sr.setColor(0.9f, 0.9f, 1, 0.1f);
+        sr.rect(cam.position.x-cam.viewportWidth/2, cam.position.y-cam.viewportHeight/2, cam.viewportWidth, 50);
+
         sr.end();
     }
 
